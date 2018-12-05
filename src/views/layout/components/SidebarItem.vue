@@ -9,7 +9,7 @@
         <el-submenu :index='item.href' :key="item.href" v-if="!item.leaf">
             <template slot="title">
                 <i :class="item.icon"></i>
-                <span>{{item.text}}</span>
+                <span v-show="isShowTitle" >{{item.text}}</span>
             </template>
             <template v-for="childItem in item.children">
                 <router-link v-if="childItem.leaf" :key="childItem.href" :to="childItem.href" class="link-menu">
@@ -22,6 +22,11 @@
 <script>
 export default {
   name: 'SidebarItem',
+  computed: {
+    isShowTitle () {
+      return this.$store.state.sideBarOpen
+    }
+  },
   props: {
     item: {}
   }
