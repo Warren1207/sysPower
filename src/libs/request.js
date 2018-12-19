@@ -38,7 +38,7 @@ service.interceptors.request.use(
 service.interceptors.response.use(
   response => response,
   error => {
-    if (error.response.status === 403) {
+    if (error.response.status === 401) {
       removeToken()
       router.push({
         name: 'login'

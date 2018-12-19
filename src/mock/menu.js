@@ -28,6 +28,7 @@ const menuArray = [{
     }
   ]
 }]
+
 var powerArray = [{
   name: '系统权限',
   icon: 'icon iconfont icon-quanxian-selected',

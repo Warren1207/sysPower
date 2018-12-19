@@ -23,8 +23,8 @@
               </el-form-item>
               <el-form-item label="类型" prop="type">
                   <el-select v-model="menuFrom.type" placeholder="类型" >
-                    <el-option label="菜单" :value="1"></el-option>
-                    <el-option label="功能" :value="2"></el-option>
+                    <el-option label="菜单" :value="2"></el-option>
+                    <el-option label="功能" :value="1"></el-option>
                   </el-select>
               </el-form-item>
               <el-form-item label="地址" prop="url">
@@ -79,25 +79,31 @@ export default {
     },
     queryPower () {
       queryPowerFn().then(response => {
-        this.menuArray = response.data
+        this.menuArray = response.data.data
       })
     },
     submitFromFn () {
       this.$refs['menuFromDom'].validate(valid => {
         if (valid) {
           if (this.formType === 'add') {
-            insertMenuInfo(this.formData).then(res => {
+            insertMenuInfo(this.menuFrom).then(res => {
               this.$message({
                 message: '菜单新增成功',
                 type: 'success'
               })
+              this.queryPower()
+              const parentid = this.menuFrom.parentid
+              this.menuFrom = { parentid }
             })
           } else if (this.formType === 'modify') {
-            modifyMenuInfo(this.formData).then(res => {
+            modifyMenuInfo(this.menuFrom).then(res => {
               this.$message({
                 message: '菜单修改成功',
                 type: 'success'
               })
+              this.queryPower()
+              const parentid = this.menuFrom.parentid
+              this.menuFrom = { parentid }
             })
           }
         }

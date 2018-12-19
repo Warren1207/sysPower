@@ -44,10 +44,7 @@
             type="selection"
             width="55">
             </el-table-column>
-            <el-table-column
-                label="用户 ID"
-                prop="id"
-                fixed>
+            <el-table-column fixed label="序号" type="index" show-overflow-tooltip width="50">
             </el-table-column>
             <el-table-column
                 label="用户名"
@@ -70,7 +67,7 @@
                 with="300"
                 :show-overflow-tooltip="true">
                 <template slot-scope="scope">
-                    <span>{{ scope.row.createTime}}</span>
+                    <span>{{ scope.row.create_time}}</span>
                 </template>
             </el-table-column>
         </el-table>
@@ -110,7 +107,7 @@
     </div>
 </template>
 <script>
-import { queryUserList, insertUserInfo, modifyUserInfo, deleteUserInfo } from '@/api/sys'
+import { queryUserList, insertUserInfo, modifyUserInfo, deleteUserInfo, queryRoleAll } from '@/api/sys'
 export default {
   name: 'sysUser',
   data () {
@@ -191,12 +188,17 @@ export default {
       this.loading = true
       queryUserList(this.query).then(response => {
         this.loading = false
-        this.list = response.data.list || []
-        this.total = response.data.total || 0
+        this.list = response.data.data.rows || []
+        this.total = response.data.data.count || 0
       }).catch(() => {
         this.loading = false
         this.list = []
         this.total = 0
+      })
+    },
+    queryRole () {
+      queryRoleAll().then(response => {
+        this.roles = response.data.data
       })
     },
     insertFn () {
@@ -244,6 +246,7 @@ export default {
               message: '删除成功！',
               type: 'success'
             })
+            this.queryFn()
           })
         })
       } else {
@@ -263,6 +266,7 @@ export default {
                 type: 'success'
               })
               this.hideForm()
+              this.queryFn()
             })
           } else if (this.formType === 'modify') {
             modifyUserInfo(this.formData).then(res => {
@@ -271,6 +275,7 @@ export default {
                 type: 'success'
               })
               this.hideForm()
+              this.queryFn()
             })
           }
         }
@@ -286,6 +291,7 @@ export default {
   },
   created () {
     this.queryFn()
+    this.queryRole()
   }
 }
 </script>

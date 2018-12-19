@@ -40,6 +40,13 @@ export function queryRoleList (data) {
   })
 }
 
+export function queryRoleAll () {
+  return request({
+    url: '/api/role/queryAllFn',
+    method: 'get'
+  })
+}
+
 export function insertRoleInfo (data) {
   return request({
     url: '/api/role/insertInfo',

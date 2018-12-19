@@ -12,7 +12,7 @@ const menu = {
     queryMenuFun ({ commit }) {
       return new Promise((resolve, reject) => {
         queryMenuFn().then(response => {
-          const data = response.data
+          const data = response.data.data
           commit('SET_MENU', data)
           resolve()
         }).catch(error => {

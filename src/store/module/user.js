@@ -18,6 +18,9 @@ const user = {
       state.token = token
     }
   },
+  getters: {
+    token: state => state.token
+  },
   actions: {
     // 登录
     LoginFun ({ commit }, userInfo) {

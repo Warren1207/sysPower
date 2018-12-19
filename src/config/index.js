@@ -1,6 +1,6 @@
 export default {
   BASE_API: {
-    dev: '/',
-    prod: '/'
+    dev: '', // 'http://127.0.0.1:7001/',
+    prod: '' // 'http://127.0.0.1:7001/'
   }
 }

@@ -44,10 +44,7 @@
             type="selection"
             width="55">
             </el-table-column>
-            <el-table-column
-                label="角色 ID"
-                prop="id"
-                fixed>
+            <el-table-column fixed label="序号" type="index" show-overflow-tooltip width="50">
             </el-table-column>
             <el-table-column
                 label="角色名称"
@@ -191,8 +188,8 @@ export default {
       this.loading = true
       queryRoleList(this.query).then(response => {
         this.loading = false
-        this.list = response.data.list || []
-        this.total = response.data.total || 0
+        this.list = response.data.data.rows || []
+        this.total = response.data.data.count || 0
       }).catch(() => {
         this.loading = false
         this.list = []
@@ -201,12 +198,12 @@ export default {
     },
     queryUser () {
       queryAllUser().then(response => {
-        this.unRoleUserArray = response.data
+        this.unRoleUserArray = response.data.data
       })
     },
     queryPower () {
       queryPowerFn().then(response => {
-        this.menuArray = response.data
+        this.menuArray = response.data.data
       })
     },
     insertFn () {
@@ -252,6 +249,7 @@ export default {
               message: '删除成功！',
               type: 'success'
             })
+            this.queryFn()
           })
         })
       } else {
@@ -271,6 +269,7 @@ export default {
                 type: 'success'
               })
               this.hideForm()
+              this.queryFn()
             })
           } else if (this.formType === 'modify') {
             modifyRoleInfo(this.formData).then(res => {
@@ -279,6 +278,7 @@ export default {
                 type: 'success'
               })
               this.hideForm()
+              this.queryFn()
             })
           }
         }
@@ -292,7 +292,10 @@ export default {
       var selectedRow = this.$refs['data-table'].selection
       if (selectedRow.length === 1) {
         queryRoleUser(selectedRow[0].id).then(response => {
-          this.roleUserArray = response.data
+          this.roleUserArray = []
+          response.data.data.map(function (value) {
+            this.roleUserArray.push(value.userid)
+          }.bind(this))
         })
         this.roleUserDialogVisible = !this.roleUserDialogVisible
       } else {
@@ -306,7 +309,9 @@ export default {
       this.roleUserDialogVisible = !this.roleUserDialogVisible
     },
     submitUserForm () {
-      modifyRoleUser(this.roleUserArray).then(res => {
+      const selectedRow = this.$refs['data-table'].selection
+      const roleid = selectedRow[0].id
+      modifyRoleUser({ ids: this.roleUserArray, roleid }).then(res => {
         this.$message({
           message: '角色用户修改成功！',
           type: 'success'
@@ -321,7 +326,11 @@ export default {
           this.$refs['menu-tree'].setCheckedKeys([])
         }
         queryRoleMenu(selectedRow[0].id).then(response => {
-          this.$refs['menu-tree'].setCheckedKeys(response.data)
+          let menuIds = []
+          response.data.data.map(function (value) {
+            menuIds.push(value.powerid)
+          })
+          this.$refs['menu-tree'].setCheckedKeys(menuIds)
         })
         this.roleMenuDialogVisible = !this.roleMenuDialogVisible
       } else {
@@ -335,8 +344,10 @@ export default {
       this.roleMenuDialogVisible = !this.roleMenuDialogVisible
     },
     submitMenuForm () {
+      const selectedRow = this.$refs['data-table'].selection
+      const roleid = selectedRow[0].id
       const roleMenuArray = this.$refs['menu-tree'].getCheckedKeys()
-      modifyRoleMenu(roleMenuArray).then(res => {
+      modifyRoleMenu({ ids: roleMenuArray, roleid }).then(res => {
         this.$message({
           message: '角色菜单修改成功！',
           type: 'success'
